@@ -33,16 +33,12 @@ module.exports = (({userData, res}) => {
 
         return {
             isValid,
-            responseToFront,
         };
     };
-
-    const responseToFront = isValidate().responseToFront;
-
 
     const isAuth = true;
 
     if (isValidate().isValid) {
-        connection({logger, userData, res, responseToFront, isAuth});
+        connection({logger, userData, res, isAuth});
     }
 });

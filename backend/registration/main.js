@@ -90,16 +90,12 @@ module.exports = (({userData, res}) => {
 
         return {
             isValid,
-            responseToFront,
         };
     };
-
-    const responseToFront = isValidate().responseToFront;
-
 
     const isRegistration = true;
 
     if (isValidate().isValid) {
-        connection({logger, userData, res, responseToFront, isRegistration});
+        connection({logger, userData, res, isRegistration});
     }
 });

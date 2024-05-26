@@ -1,6 +1,4 @@
-module.exports = (({logger, userData, res, responseToFront, isAuth, isRegistration}) => {
-    console.log(1234);
-
+module.exports = (({logger, userData, res, isAuth, isRegistration}) => {
     const crypto = require('crypto');
     const mysql = require('mysql2');
     const {name, login} = userData;
@@ -20,7 +18,11 @@ module.exports = (({logger, userData, res, responseToFront, isAuth, isRegistrati
 
             return logger(error.message);
         }
-        console.log(isRegistration);
+
+        const responseToFront = {
+            message: null,
+            success: false,
+        };
 
         if (isRegistration) {
 
@@ -67,7 +69,6 @@ module.exports = (({logger, userData, res, responseToFront, isAuth, isRegistrati
 
             connection.query(sqlReqestSelectString, (error, result) => {
                 if (error) {
-
                     connection.end();
 
                     return logger(error);
@@ -84,7 +85,6 @@ module.exports = (({logger, userData, res, responseToFront, isAuth, isRegistrati
                 res.send(responseToFront);
 
                 console.log({result});
-
             });
         }
     });
