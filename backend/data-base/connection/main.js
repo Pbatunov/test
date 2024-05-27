@@ -1,4 +1,4 @@
-module.exports = (({logger, userData, res, isAuth, isRegistration}) => {
+module.exports = (({logger, userData, req, res, isAuth, isRegistration}) => {
     const crypto = require('crypto');
     const mysql = require('mysql2');
     const {name, login} = userData;
@@ -81,10 +81,15 @@ module.exports = (({logger, userData, res, isAuth, isRegistration}) => {
                     connection.end();
                     return logger(responseToFront.message);
                 }
+
                 responseToFront.success = true;
+                req.session.auth = true;
+                req.session.username = result[0].name;
+                req.session.save();
                 res.send(responseToFront);
 
-                console.log({result});
+                console.log({session: req.session});
+                res.end();
             });
         }
     });

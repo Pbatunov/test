@@ -5,13 +5,34 @@
     const auth = require('./backend/auth/main');
     const registration = require('./backend/registration/main');
     const app = express();
+    const session = require('express-session');
     const port = 3000;
     const staticPath = 'static';
 
+    app.use(express.static(staticPath));
+    app.use(session({
+        secret: 'secret value',
+        resave: false,
+        saveUninitialized: false,
+    }));
+
     //app.use(upload());
-    app.get('/', ({res}) => {
-        res.write(fs.readFileSync(`${staticPath}/index.html`));
-        res.end();
+    app.get('/', (req, res) => {
+        console.log(req.session);
+
+        req.session.save((err) => {
+            if (err) {
+                return res.sendStatus(400);
+            }
+
+            if (!req.session.auth) {
+                res.write(fs.readFileSync(`${staticPath}/auth.html`));
+                return res.end();
+            }
+
+            res.redirect('/profile');
+            return res.end();
+        });
     });
 
     app.get('/registration', ({res}) => {
@@ -19,9 +40,20 @@
         res.end();
     });
 
-    app.get('/profile', ({res}) => {
-        res.write(fs.readFileSync(`${staticPath}/profile.html`));
-        res.end();
+    app.get('/profile', (req, res) => {
+        console.log({profileSession: req.session});
+        req.session.save((err) => {
+            if (err) {
+                return res.sendStatus(400);
+            }
+
+            if (!req.session.auth) {
+                return res.redirect('/');
+            }
+
+            res.write(fs.readFileSync(`${staticPath}/profile.html`));
+            res.end();
+        });
     });
 
     const urlencodedParser = express.urlencoded({extended: true});
@@ -30,8 +62,7 @@
         if (!req.body) return res.sendStatus(400);
 
         const userData = req.body;
-
-        auth({userData, res});
+        auth({userData, req, res});
     });
 
     app.post('/registration', urlencodedParser, function(req, res) {
@@ -42,7 +73,6 @@
         registration({userData, res});
     });
 
-    app.use(express.static(staticPath));
     app.listen(port, () => {
         console.log(`http://localhost:${port}`);
     });

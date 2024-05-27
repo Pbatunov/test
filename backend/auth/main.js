@@ -1,4 +1,4 @@
-module.exports = (({userData, res}) => {
+module.exports = (({userData, req, res}) => {
     const {login, password} = userData;
     const connection = require('../data-base/connection/main');
 
@@ -39,6 +39,6 @@ module.exports = (({userData, res}) => {
     const isAuth = true;
 
     if (isValidate().isValid) {
-        connection({logger, userData, res, isAuth});
+        connection({logger, userData, req, res, isAuth});
     }
 });
