@@ -86,7 +86,7 @@ module.exports = {
                 //
                 const bundler = browserify({
                     entries: [filepaths],
-                    paths: [paths.src, paths.common, paths.html.project, paths.html.common],
+                    paths: [paths.src, paths.common, paths.html.project],
                     extensions: ['.js', '.json', '.jsx'],
                 });
 

@@ -6,7 +6,7 @@
     const registration = require('./backend/registration/main');
     const app = express();
     const session = require('express-session');
-    const port = 3000;
+    const port = 5500;
     const staticPath = 'static';
 
     app.use(express.static(staticPath));
@@ -18,7 +18,6 @@
 
     //app.use(upload());
     app.get('/', (req, res) => {
-        console.log(req.session);
 
         req.session.save((err) => {
             if (err) {

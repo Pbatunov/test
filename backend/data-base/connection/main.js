@@ -2,22 +2,27 @@ module.exports = (({logger, userData, req, res, isAuth, isRegistration}) => {
     const crypto = require('crypto');
     const mysql = require('mysql2');
     const {name, login} = userData;
+    console.log({name});
     const password = crypto.createHash('md5').update(userData.password).digest('hex');
 
     const connection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        database: 'openDB',
-        password: '',
+        host: '77.222.40.109',
+        user: 'batunov192',
+        database: 'batunov192',
+        password: 'ZkkpkMiv_2020',
+        charset: 'utf8'
     });
 
 
     connection.connect((error) => {
         if (error) {
+            console.log(error);
             connection.end();
 
             return logger(error.message);
         }
+
+        console.log(connection)
 
         const responseToFront = {
             message: null,
@@ -26,7 +31,7 @@ module.exports = (({logger, userData, req, res, isAuth, isRegistration}) => {
 
         if (isRegistration) {
 
-            const sqlReqestSelectString = `SELECT * FROM users WHERE login = '${login}'`;
+            const sqlReqestSelectString = `SELECT * FROM test_users WHERE login = '${login}'`;
 
             connection.query(sqlReqestSelectString, (error, result) => {
                 if (error) {
@@ -44,7 +49,7 @@ module.exports = (({logger, userData, req, res, isAuth, isRegistration}) => {
                     return logger(responseToFront.message);
                 }
 
-                const sqlRequestInsertString = `INSERT INTO users (name, login, password, score) VALUES ('${name}', '${login}', '${password}', '0')`;
+                const sqlRequestInsertString = `INSERT INTO test_users (name, login, password, scores) VALUES ('${name}', '${login}', '${password}', '0')`;
 
                 connection.execute(sqlRequestInsertString, (error) => {
                     if (error) {
@@ -65,7 +70,7 @@ module.exports = (({logger, userData, req, res, isAuth, isRegistration}) => {
         }
 
         if (isAuth) {
-            const sqlReqestSelectString = `SELECT * FROM users WHERE login = '${login}' and password = '${password}'`;
+            const sqlReqestSelectString = `SELECT * FROM test_users WHERE login = '${login}' and password = '${password}'`;
 
             connection.query(sqlReqestSelectString, (error, result) => {
                 if (error) {
