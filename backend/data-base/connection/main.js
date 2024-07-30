@@ -2,7 +2,6 @@ module.exports = (({logger, userData, req, res, isAuth, isRegistration}) => {
     const crypto = require('crypto');
     const mysql = require('mysql2');
     const {name, login} = userData;
-    console.log({name});
     const password = crypto.createHash('md5').update(userData.password).digest('hex');
 
     const connection = mysql.createConnection({
@@ -90,8 +89,6 @@ module.exports = (({logger, userData, req, res, isAuth, isRegistration}) => {
                 req.session.username = result[0].name;
                 req.session.save();
                 res.send(responseToFront);
-
-                console.log({session: req.session});
                 res.end();
             });
         }

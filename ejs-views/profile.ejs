@@ -9,7 +9,14 @@
     <title>Страница профиля</title>
 </head>
 <body>
-    <h1>Привет<span class="js-user"></span>!</h1>
-    <script src="./build/scripts/_profile.js"></script>
+    <% if (user.name) { %>
+        <h1>Привет, <%- user.name %>!</h1>
+    <% } %>
+
+<script>
+    console.log({
+        user: JSON.parse('<%- JSON.stringify(user) %>')
+    });
+</script>
 </body>
 </html>

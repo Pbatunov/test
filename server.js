@@ -1,5 +1,6 @@
 (async () => {
     const fs = require('fs');
+    const path = require('path');
     const express = require('express');
     //const upload = require('express-fileupload');
     const auth = require('./backend/auth/main');
@@ -8,6 +9,7 @@
     const session = require('express-session');
     const port = 5500;
     const staticPath = 'static';
+    const ejsViewsPath = 'ejs-views';
 
     app.use(express.static(staticPath));
     app.use(session({
@@ -15,6 +17,8 @@
         resave: false,
         saveUninitialized: false,
     }));
+
+    app.set('views engine', 'ejs');
 
     //app.use(upload());
     app.get('/', (req, res) => {
@@ -40,7 +44,6 @@
     });
 
     app.get('/profile', (req, res) => {
-        console.log({profileSession: req.session});
         req.session.save((err) => {
             if (err) {
                 return res.sendStatus(400);
@@ -50,7 +53,13 @@
                 return res.redirect('/');
             }
 
-            res.write(fs.readFileSync(`${staticPath}/profile.html`));
+            // eslint-disable-next-line no-undef
+            res.render(path.resolve(__dirname, ejsViewsPath, 'profile.ejs'), {
+                user: {
+                    name: req.session.username,
+                },
+            });
+
             res.end();
         });
     });
@@ -70,6 +79,17 @@
         const userData = req.body;
 
         registration({userData, res});
+    });
+
+    app.post('/profile', urlencodedParser, function(req, res) {
+        if (!req.session && !req.session.username) return res.sendStatus(400);
+
+        const setUser = () => {
+            res.send(req.session.username);
+            res.end();
+        };
+
+        setUser();
     });
 
     app.listen(port, () => {
