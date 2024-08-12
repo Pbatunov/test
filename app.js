@@ -1,5 +1,4 @@
 (async () => {
-    const fs = require('fs');
     const path = require('path');
     const express = require('express');
     //const upload = require('express-fileupload');
@@ -9,6 +8,7 @@
     const session = require('express-session');
     const port = 5500;
     const staticPath = 'static';
+    const viewsPath = 'views';
     const ejsViewsPath = 'ejs-views';
 
     app.use(express.static(staticPath));
@@ -29,8 +29,7 @@
             }
 
             if (!req.session.auth) {
-                res.write(fs.readFileSync(`${staticPath}/auth.html`));
-                return res.end();
+                return res.sendFile(path.resolve(__dirname, viewsPath, 'auth.html'));
             }
 
             res.redirect('/profile');
@@ -38,9 +37,12 @@
         });
     });
 
-    app.get('/registration', ({res}) => {
-        res.write(fs.readFileSync(`${staticPath}/registration.html`));
-        res.end();
+    app.get('/registration', (req, res) => {
+        if (!req.session.auth) {
+            return res.sendFile(path.resolve(__dirname, viewsPath, 'registration.html'));
+        }
+
+            return res.redirect('/profile');
     });
 
     app.get('/profile', (req, res) => {
@@ -66,30 +68,26 @@
 
     const urlencodedParser = express.urlencoded({extended: true});
 
-    app.post('/auth', urlencodedParser, function(req, res) {
-        if (!req.body) return res.sendStatus(400);
+    app.post('/auth', urlencodedParser, (req, res) => {
+        if (!req.body) {
+            return res.sendStatus(400);
+        }
 
-        const userData = req.body;
-        auth({userData, req, res});
+        auth({userData: req.body, req, res});
     });
 
-    app.post('/registration', urlencodedParser, function(req, res) {
-        if (!req.body) return res.sendStatus(400);
+    app.post('/registration', urlencodedParser, (req, res) => {
+        if (!req.body) {
+            return res.sendStatus(400);
+        }
 
-        const userData = req.body;
-
-        registration({userData, res});
+        registration({userData: req.body, res});
     });
 
-    app.post('/profile', urlencodedParser, function(req, res) {
-        if (!req.session && !req.session.username) return res.sendStatus(400);
-
-        const setUser = () => {
-            res.send(req.session.username);
-            res.end();
-        };
-
-        setUser();
+    app.post('/profile', urlencodedParser, (req, res) => {
+        if (!req.session && !req.session.username) {
+            return res.sendStatus(400);
+        }
     });
 
     app.listen(port, () => {

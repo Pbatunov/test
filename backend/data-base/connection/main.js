@@ -87,6 +87,7 @@ module.exports = (({logger, userData, req, res, isAuth, isRegistration}) => {
                 responseToFront.success = true;
                 req.session.auth = true;
                 req.session.username = result[0].name;
+                req.session.password = result[0].password;
                 req.session.save();
                 res.send(responseToFront);
                 res.end();

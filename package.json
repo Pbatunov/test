@@ -1,11 +1,12 @@
 {
-  "name": "gulp-project",
+  "name": "nodejsauth",
   "version": "1.0.0",
-  "description": "gulp test",
-  "main": "index.js",
+  "description": "NodeJS Auth",
+  "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon server.js"
+    "start": "nodemon app.js",
+    "run": "npm app.js"
   },
   "author": "Pavel Batunov",
   "license": "ISC",

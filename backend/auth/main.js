@@ -3,7 +3,7 @@ module.exports = (({userData, req, res}) => {
     const connection = require('../data-base/connection/main');
 
     const logger = (message) => {
-        console.log(`Registration Error: ${message}`);
+        console.log(`Auth Error: ${message}`);
     };
 
     const isValidate = () => {
